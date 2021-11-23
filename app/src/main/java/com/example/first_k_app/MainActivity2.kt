@@ -1,10 +1,12 @@
 package com.example.first_k_app
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -45,6 +47,10 @@ class MainActivity2 : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+
+
+
         createNotificationChannel()
 
         val ss:String=intent.getStringExtra("DATA").toString()
@@ -54,6 +60,26 @@ class MainActivity2 : AppCompatActivity() {
             val myIntent = Intent(baseContext,MyBroadcast::class.java).apply {
             putExtra("KEY2",intent.getStringExtra("DATA"))
                 action = MyBroadcast.MY_ACTION
+
+
+                // we are creating our file to save data in shared preferences
+                //this data is stored locally in android device memory
+                val sharedPreferences = baseContext.getSharedPreferences("MY_SHARED_PREFS", MODE_PRIVATE)
+                // editor is needed to write data in shared preferences
+                // in order to write to the preference you need to use . apply{}
+                // put oporator everything needs a key
+                val editor = sharedPreferences.edit().apply{
+                    putString("EMAIL_KEY", binding.textView.text.toString())
+                    putString("udokwu.maduabuchi@gmail.com", "TESTing")
+                    /*clear the whole file
+                    sharedPreferences.edit().clear().apply()
+                    //clear a specific value
+                    sharedPreferences.edit().remove("EMAIL_KEY").apply()*/
+                    val allKeys = sharedPreferences.all.keys.toString()
+                    Log.d("key_value", allKeys)
+                }.apply()
+
+               val mString =  sharedPreferences.getString("EMAIL_KEY", null)
             }
                  broadcastManager.sendBroadcast(myIntent)
         }
